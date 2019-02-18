@@ -13,14 +13,17 @@
     
     
     
-====
-
+---
 第三方依赖包
-下载
-https://github.com/AriaLyy/Aria
-https://aria.laoyuyu.me/aria_doc/start/any_java.html
+   
+    下载
+    https://github.com/AriaLyy/Aria
+    https://aria.laoyuyu.me/aria_doc/start/any_java.html
 运行时权限 google 
-https://github.com/googlesamples/easypermissions
-tips ==> 腾讯bugly有SDK支持热更新 支持版本更新（强制非强制） 
-https://bugly.qq.com/docs/user-guide/instruction-manual-android-upgrade/?v=20180709165613
-安装权限不需要动态请求
+   
+    https://github.com/googlesamples/easypermissions
+tips 
+   
+    ==> 腾讯bugly有SDK支持热更新 支持版本更新（强制非强制） 
+    https://bugly.qq.com/docs/user-guide/instruction-manual-android-upgrade/?v=20180709165613
+    安装权限不需要动态请求
