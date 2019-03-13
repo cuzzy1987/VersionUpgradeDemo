@@ -1,5 +1,6 @@
 package com.me.versionupdatedemo.ui;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.me.versionupdatedemo.callback.DownloadResultCallback;
 import com.me.versionupdatedemo.receiver.ScreenStatusReceiver;
 import com.me.versionupdatedemo.utils.DownloadUtils;
 import com.me.versionupdatedemo.utils.UpdateUtils;
+import com.yanzhenjie.permission.AndPermission;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,DownloadResultCallback {
 
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		initReceiver();
+//		initReceiver();
 		initView();
 		initData();
 	}
@@ -46,7 +48,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		switch (view.getId()){
 			case R.id.btn:
 				Toast.makeText(this.getBaseContext(), "下载最新版本", Toast.LENGTH_SHORT).show();
-				updateUtils.download(name,path,"",this);
+				/*System.out.println("是否有写入权限 另"+AndPermission.hasPermissions(this,Manifest.permission.WRITE_EXTERNAL_STORAGE));
+				AndPermission.with(this)
+						.runtime()
+						.permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+						.onDenied(deny->showToast("has refused"))
+						.onGranted(grant->showToast("has granted"))
+						.start();*/
+
+				if (AndPermission.hasPermissions(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+					updateUtils.download(name,path,"",this);
+				}else AndPermission.with(this)
+							.runtime()
+							.permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+							.onDenied(deny->showToast("has refused"))
+							.onGranted(grant->updateUtils.download(name,path,"",this))
+							.start();
 				break;
 			default:
 				break;
@@ -73,8 +90,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		}
 	}
 
+	private int i= 0;
 	private void showProgressDialog(DownloadTask download) {
-
+		showToast("进度 "+ (i+=10));
 	}
 
 	private void showToast(String msg) {

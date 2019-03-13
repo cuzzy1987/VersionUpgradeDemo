@@ -68,7 +68,8 @@ public class UpdateUtils {
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		if (Build.VERSION.SDK_INT >= 24){
-			Uri uri = FileProvider.getUriForFile(mContext,"com.me.versionupdatedemo.fileProvider",file);
+
+			Uri uri = FileProvider.getUriForFile(mContext,mContext.getPackageName()+".fileProvider",file);
 			intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 			intent.setDataAndType(uri,"application/vnd.android.package-archive");
 		}else {
