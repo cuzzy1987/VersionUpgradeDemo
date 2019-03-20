@@ -1,5 +1,6 @@
 package com.me.versionupdatedemo.ui;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private ScreenStatusReceiver mScreenStatusReceiver;
 	private UpgradeDialog dialog;
+	private AlertDialog.Builder msgDialogBuilder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private int percent=0;
 	private void initView() {
 		dialog = new UpgradeDialog(this);
+		msgDialogBuilder = new AlertDialog.Builder(this);
 		findViewById(R.id.btn).setOnClickListener(this);
 		// 倒计时总时间 间隔时间
 
@@ -64,32 +67,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	CountDownTimer countDownTimer;
 	public void showDialog(){
-
 		dialog.build()
 				.setTv("版本：1.100.1","版本大小：25M","更新内容：有什么可说的")
-//				.setOnPositiveClickListener(() -> countDownTimer.start())
-				.setOnPositiveClickListener(() -> checkNetworkState())
+				.setOnPositiveClickListener(() ->{if (checkNetworkState()==NetworkUtils.NETWORK_WIFI)dialog.setState(false);})
 				.setOnNegativeClickListener(() -> dialog.dismiss())
 				.show();
 	}
 
-	private void checkNetworkState() {
+	private int checkNetworkState() {
 		switch (NetworkUtils.getNetWorkType(this)){
 			case NetworkUtils.NETWORK_INVALID:
 				showToast("当前网络不可用");
-				return;
+
+				break;
 			case NetworkUtils.NETWORK_WAP:
 				showToast("检测到您正在使用流量 是否使用流量下载?");// 继续弹窗 继续选
-				return;
+				msgDialogBuilder
+						.setTitle("检测到您正在使用流量,是否使用继续使用流量下载更新")
+						.setNegativeButton("取消",(dialog1, which) -> {dialog1.dismiss();showToast("取消了");})
+						.setPositiveButton("使用流量下载",(dialog1, which) -> {
+							dialog1.dismiss();showToast("使用流量下载");
+							dialog.setEnable();
+						})
+						.show();
+				break;
 			case NetworkUtils.NETWORK_WIFI:
-				upgrade();
+//				upgrade();
 				break;
 		}
+		return NetworkUtils.getNetWorkType(this);
 	}
 
 	private void upgrade() {
-
-
 
 		countDownTimer = new CountDownTimer(10000,1000) {
 			@Override

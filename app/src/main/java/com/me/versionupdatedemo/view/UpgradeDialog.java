@@ -20,9 +20,10 @@ import com.me.versionupdatedemo.callback.OnPositiveClickListener;
 public class UpgradeDialog extends AlertDialog{
 
 	private View view;
+	private boolean goNext = false;
 	private Context mContext;
 	private TextView vTv,sTv,cTv;
-			private Button negativeTv,positiveTv;
+	private Button negativeTv,positiveTv;
 	private ProgressBar mProgressbar;
 	private OnPositiveClickListener mPositiveClickListener;
 	private OnNegativeClickListener mNegativeClickListener;
@@ -50,10 +51,14 @@ public class UpgradeDialog extends AlertDialog{
 		positiveTv = view.findViewById(R.id.positiveTv);
 
 		view.findViewById(R.id.positiveTv).setOnClickListener(v -> {
-			mPositiveClickListener.onPositiveClick();//如果下载的话不能取消
-			positiveTv.setText("正在下载");
-			negativeTv.setEnabled(false);
-			positiveTv.setEnabled(false);
+			System.out.println("state up => "+goNext);
+			mPositiveClickListener.onPositiveClick();
+			System.out.println("state down => "+goNext);
+			if (goNext){
+				positiveTv.setText("正在下载");
+				negativeTv.setEnabled(false);
+				positiveTv.setEnabled(false);
+			}
 		});
 		view.findViewById(R.id.negativeTv).setOnClickListener(v -> mNegativeClickListener.OnNegativeClickListener());
 		return this;
@@ -91,4 +96,13 @@ public class UpgradeDialog extends AlertDialog{
 		}
 	}
 
+	public void setState(boolean b) {
+		goNext = b;
+	}
+
+	public void setEnable() {
+		positiveTv.setText("正在下载");
+		negativeTv.setEnabled(false);
+		positiveTv.setEnabled(false);
+	}
 }
