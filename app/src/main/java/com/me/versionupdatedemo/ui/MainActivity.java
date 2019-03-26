@@ -1,5 +1,6 @@
 package com.me.versionupdatedemo.ui;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,6 +16,7 @@ import com.me.versionupdatedemo.utils.DownloadUtils;
 import com.me.versionupdatedemo.utils.NetworkUtils;
 import com.me.versionupdatedemo.utils.UpdateUtils;
 import com.me.versionupdatedemo.view.UpgradeDialog;
+import com.yanzhenjie.permission.AndPermission;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,DownloadResultCallback {
 
@@ -93,13 +95,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				break;
 			case NetworkUtils.NETWORK_WIFI:
 //				upgrade();
+				tikTok();
 				break;
 		}
 		return NetworkUtils.getNetWorkType(this);
 	}
 
-	private void upgrade() {
-
+	private void tikTok(){
 		countDownTimer = new CountDownTimer(10000,1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
@@ -116,14 +118,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		};
 
 		countDownTimer.start();
-		/*if (AndPermission.hasPermissions(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+	}
+
+	private void upgrade() {
+
+		if (AndPermission.hasPermissions(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
 			updateUtils.download(name,path,"",this);
 		}else AndPermission.with(this)
 				.runtime()
 				.permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 				.onDenied(deny->showToast(""))
 				.onGranted(grant->updateUtils.download(name,path,"",this))
-				.start();*/
+				.start();
 
 	}
 
