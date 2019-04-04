@@ -28,4 +28,4 @@ tips
     https://bugly.qq.com/docs/user-guide/instruction-manual-android-upgrade/?v=20180709165613
     安装权限不需要动态请求
     
-   [百度] (http://www.baidu.com)
+   

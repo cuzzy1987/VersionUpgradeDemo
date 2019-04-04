@@ -5,20 +5,29 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arialyy.aria.core.download.DownloadTask;
 import com.me.versionupdatedemo.R;
 import com.me.versionupdatedemo.callback.DownloadResultCallback;
 import com.me.versionupdatedemo.receiver.ScreenStatusReceiver;
+import com.me.versionupdatedemo.utils.DateUtils;
 import com.me.versionupdatedemo.utils.DownloadUtils;
 import com.me.versionupdatedemo.utils.NetworkUtils;
+import com.me.versionupdatedemo.utils.StringUtils;
 import com.me.versionupdatedemo.utils.UpdateUtils;
 import com.me.versionupdatedemo.view.UpgradeDialog;
 import com.yanzhenjie.permission.AndPermission;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,DownloadResultCallback {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,DownloadResultCallback ,TextWatcher {
 
 	private DownloadUtils download;
 	private UpdateUtils updateUtils;
@@ -28,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private ScreenStatusReceiver mScreenStatusReceiver;
 	private UpgradeDialog dialog;
 	private AlertDialog.Builder msgDialogBuilder;
+	private EditText et,et2;
+	private TextView textView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,19 +63,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		dialog = new UpgradeDialog(this);
 		msgDialogBuilder = new AlertDialog.Builder(this);
 		findViewById(R.id.btn).setOnClickListener(this);
+		et = findViewById(R.id.et);
 		// 倒计时总时间 间隔时间
+//		et.setInputType(InputType.TYPE_CLASS_NUMBER);
+		et2 = findViewById(R.id.et2);
+		et.setText("2018-2-28");
+		et2.setText("2019-2-27");
+		textView = findViewById(R.id.tv);
+		et.addTextChangedListener(this);
+		et2.addTextChangedListener(this);
 
 	}
-
+	Date date = new Date(System.currentTimeMillis());
+	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()){
 			case R.id.btn:
-				showDialog();
+				showAlertDialog();
+//				checkDate();
+//				System.out.println("当前时间 "+simpleDateFormat.format(date)+"\n下个月时间是 "+DateUtils.getNextMonthDay(date));
+//				compare();
+//				showDialog();
+//				Constant.count +=2;
+//				System.out.println("count=> "+Constant.count);
+//				showToast(String.format("count=> %d",Constant.count));
 				break;
 			default:
 				break;
 		}
+	}
+
+	private void showAlertDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		View view = getLayoutInflater().inflate(R.layout.layout_dialog_content,null);
+		builder.setView(view)
+				.setPositiveButton("确认",(dialog1, which) -> showToast("confirm"))
+				.setNegativeButton("取消",((dialog1, which) -> showToast("okay u can thought a while")))
+				.setCancelable(false)
+				.show();
+	}
+
+	private void checkDate() {
+		textView.setText(DateUtils.getNextMonthDay(et.getText().toString(),et2.getText().toString()).toString());
+	}
+
+	private void compare() {
+		System.out.println("result=> "+DateUtils.dateAfter(et.getText().toString(),et2.getText().toString()));
 	}
 
 	CountDownTimer countDownTimer;
@@ -162,5 +207,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private void showToast(String msg) {
 		Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+	}
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		/* 不能输入数字 */
+		StringUtils.deleteCode(s,false,true);
 	}
 }
